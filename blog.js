@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
+
 // 获取所有博客文章
 router.get('/', async (req, res) => {
     try {
@@ -13,7 +14,8 @@ router.get('/', async (req, res) => {
       const countResult = await db.execute(countSql);
       const totalCount = countResult[0].count; // 文章总数
   
-      const sql = `SELECT * FROM blogdata LIMIT ${limit} OFFSET ${offset}`; // 查询当前页的文章
+      const sql = `SELECT * FROM blogdata ORDER BY updated_at DESC LIMIT ${limit} OFFSET ${offset}`; // 查询当前页的文章
+
       const blogs = await db.execute(sql);
   
       const totalPages = Math.ceil(totalCount / limit); // 计算总页数
@@ -93,10 +95,14 @@ router.delete('/:id', async (req, res) => {
 // 搜索博客文章
 router.get('/search/:keyword', async (req, res) => {
   try {
+    const page = req.query.page || 1; // 获取当前页数，默认为第一页
+    const limit = req.query.limit || 10; // 获取每页显示的文章数，默认为10
     const { keyword } = req.params;
-    const sql = 'SELECT * FROM blogdata WHERE title LIKE ? OR text LIKE ?';
-    const blogs = await db.execute(sql, [`%${keyword}%`, `%${keyword}%`]);
-    res.json(blogs);
+    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const sql = `SELECT * FROM blogdata WHERE title LIKE '%${keyword}%' OR text LIKE '%${keyword}%' ORDER BY updated_at DESC LIMIT ${limit} OFFSET ${offset}`;
+    // console.log(sql);
+    const blogs = await db.execute(sql);
+    res.json({blogs});
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
