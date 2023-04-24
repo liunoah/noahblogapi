@@ -1,0 +1,14 @@
+-- 创建blog数据库
+CREATE DATABASE blog;
+
+-- 切换到blog数据库
+USE blog;
+
+-- 创建blogdata表
+CREATE TABLE blogdata (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
