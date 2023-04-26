@@ -14,7 +14,7 @@
     "express": "^4.18.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.2.3",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3" 
   },
   "devDependencies": {
     "jest": "^29.5.0"
