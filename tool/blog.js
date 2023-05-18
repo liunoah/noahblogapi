@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
       const countResult = await db.execute(countSql);
       const totalCount = countResult[0].count; // 文章总数
   
-      const sql = `SELECT * FROM blogdata ORDER BY updated_at DESC LIMIT ${limit} OFFSET ${offset}`; // 查询当前页的文章
+      const sql = `SELECT * FROM blogdata ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`; // 查询当前页的文章
 
       const blogs = await db.execute(sql);
   
@@ -108,5 +108,61 @@ router.get('/search/:keyword', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+// 添加评论
+router.post('/comments', async (req, res) => {
+  const { article_id, name, comment } = req.body;
+  
+  try {
+    const sql = `INSERT INTO comment (article_id, name, comment) VALUES (${article_id}, '${name}', '${comment}')`
+    console.log(sql);
+    const blogs = await db.execute(sql);
+    // res.json({blogs});
+    res.status(200).json({ message: 'Comment added successfully',data:blogs });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+// 通过article_id 获取用户评论
+router.get('/comments/:article_id', async (req, res) => {
+  const { article_id } = req.params;
 
+  try {
+      const sql = `SELECT * FROM comment WHERE article_id=${article_id}`
+      const blogs = await db.execute(sql);
+  
+    res.status(200).json({blogs});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+// 通过article_id 获取用户评论总数
+router.get('/comments/count/:article_id', async (req, res) => {
+  const { article_id } = req.params;
+
+  try {
+    const sql = `SELECT count(*) as sum FROM comment WHERE article_id=${article_id}`
+    const count = await db.execute(sql);
+    console.log(count);
+    res.json(count[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+//根据comment id 删除评论
+router.delete('/comments/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const sql = `DELETE FROM comment WHERE id=${id}`;
+    const result = await db.execute(sql);
+    console.log(result);
+    res.json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 module.exports = router;

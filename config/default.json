@@ -1,0 +1,12 @@
+{
+    "port": 3001,
+    "database": {
+        "host": "127.0.0.1",
+        "user": "root",
+        "password": "Admin@123",
+        "database": "blog",
+        "waitForConnections": true,
+        "connectionLimit": 10,
+        "queueLimit": 0
+    }
+  }

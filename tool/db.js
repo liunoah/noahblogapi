@@ -1,14 +1,9 @@
 const mysql = require('mysql2/promise');
+// 读取配置文件
+const config = require('config');
 
-const pool = mysql.createPool({
-  host: '127.0.0.1',
-  user: 'root',
-  password: 'Admin@123',
-  database: 'blog',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+
+const pool = mysql.createPool(config.get('database'));
 
 module.exports = {
   async execute(sql, values) {
