@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './app.js',
@@ -10,6 +11,14 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.cs$/,
+        use: 'raw-loader',
+      },
+      {
+        test: /\.html$/,
+        use: 'html-loader',
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -20,5 +29,15 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: './config/default.json',
+          to: path.resolve(__dirname, 'dist'),
+        },
+      ],
+    }),
+  ],
 };
