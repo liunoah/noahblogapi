@@ -20,7 +20,8 @@ router.post('/login', async (req, res) => {
     const result = await bcrypt.compare(password, user[0].password);
     
     if (result) {
-      const token = jwt.sign({ username }, 'secret');
+      // const token = jwt.sign({ username }, 'secret');
+      const token = jwt.sign({ username }, 'secret', { expiresIn: '10d' }); // 设置令牌的有效期为30分钟
       res.json({ token });
     } else {
       res.status(401).send('Authentication failed');
@@ -30,17 +31,17 @@ router.post('/login', async (req, res) => {
   }
 });
 // 注册
-router.post('/register', async (req, res) => {
-    const { username, password, nickname } = req.body;
-    const hashedPassword = await hashPassword(password);  // 对密码进行哈希处理
-    const sql = 'INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)';
-    try {
-      const result = await db.execute(sql, [username, hashedPassword, nickname]);
-      res.json({ message: 'User registered successfully' });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-  });
+// router.post('/register', async (req, res) => {
+//     const { username, password, nickname } = req.body;
+//     const hashedPassword = await hashPassword(password);  // 对密码进行哈希处理
+//     const sql = 'INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)';
+//     try {
+//       const result = await db.execute(sql, [username, hashedPassword, nickname]);
+//       res.json({ message: 'User registered successfully' });
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//     }
+//   });
 
   module.exports = router;

@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const blogsRouter = require('./tool/blog');
+const blogsRouter = require('./route/blog');
 const userRouter = require('./route/user');
+const blogRouter = require('./route/blogRouter')
+const commentRouter = require('./route/commentRouter.js')
 const authenticateToken = require('./tool/auth');
 
 const bodyParser = require('body-parser');
@@ -28,6 +30,7 @@ app.delete('/blogs/comment/:id', authenticateToken, blogsRouter);
 
 app.use('/blogs', blogsRouter);
 app.use('/blogs/user', userRouter );
+
 // 生产环境使用5000 测试环境使用 http: 3001 https: 3004 
 const PORT = process.env.PORT || config.get('port');
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
